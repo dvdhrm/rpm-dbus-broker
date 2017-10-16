@@ -4,7 +4,7 @@
 %global c_sundry_commit 50c8ccf01b39b3f11e59c69d1cafea5bef5a9769
 
 Name:           dbus-broker
-Version:        5
+Version:        6
 Release:        1%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
@@ -82,6 +82,9 @@ cd -
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon Oct 16 2017 Tom Gundersen <teg@jklm.no> - 6-1
+- Upstream bugfix release
+
 * Tue Oct 10 2017 Tom Gundersen <teg@jklm.no> - 5-1
 - Drop downstream SELinux module
 - Support (in a limited way) at_console= policies
