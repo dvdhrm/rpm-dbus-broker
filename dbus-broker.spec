@@ -4,7 +4,7 @@
 %global c_sundry_commit 50c8ccf01b39b3f11e59c69d1cafea5bef5a9769
 
 Name:           dbus-broker
-Version:        6
+Version:        7
 Release:        1%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
@@ -39,7 +39,7 @@ written for Linux systems, and makes use of many modern features provided by
 recent Linux kernel releases.
 
 %prep
-%autosetup
+%autosetup -p1
 %setup -q -T -D -b 1
 %setup -q -T -D -b 2
 %setup -q -T -D -b 3
@@ -82,6 +82,9 @@ cd -
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Tue Oct 17 2017 Tom Gundersen <teg@jklm.no> - 7-1
+- Upstream bugfix release
+
 * Mon Oct 16 2017 Tom Gundersen <teg@jklm.no> - 6-1
 - Upstream bugfix release
 
