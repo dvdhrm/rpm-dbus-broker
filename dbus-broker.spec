@@ -1,19 +1,10 @@
-%global c_dvar_commit 7706828ecda2d8c508d6fc233dc9d198bab482ad
-%global c_list_commit 9e50b8b08e0b0b75e1c651d5aa4e3cf94368a574
-%global c_rbtree_commit 6181232360c9b517a6af3d82ebdbdce5fe36933a
-%global c_sundry_commit 50c8ccf01b39b3f11e59c69d1cafea5bef5a9769
-
 Name:           dbus-broker
-Version:        7
+Version:        8
 Release:        1%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
 URL:            https://github.com/bus1/dbus-broker
-Source0:        https://github.com/bus1/dbus-broker/archive/v%{version}/dbus-broker-%{version}.tar.gz
-Source1:        https://github.com/c-util/c-dvar/archive/%{c_dvar_commit}/c-dvar-%{c_dvar_commit}.tar.gz
-Source2:        https://github.com/c-util/c-list/archive/%{c_list_commit}/c-list-%{c_list_commit}.tar.gz
-Source3:        https://github.com/c-util/c-rbtree/archive/%{c_rbtree_commit}/c-rbtree-%{c_rbtree_commit}.tar.gz
-Source4:        https://github.com/c-util/c-sundry/archive/%{c_sundry_commit}/c-sundry-%{c_sundry_commit}.tar.gz
+Source0:        https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Provides:       bundled(c-dvar) = 1
 Provides:       bundled(c-list) = 3
 Provides:       bundled(c-rbtree) = 3
@@ -40,17 +31,6 @@ recent Linux kernel releases.
 
 %prep
 %autosetup -p1
-%setup -q -T -D -b 1
-%setup -q -T -D -b 2
-%setup -q -T -D -b 3
-%setup -q -T -D -b 4
-cd subprojects
-rm * -r
-ln -s ../../c-dvar-%{c_dvar_commit} c-dvar
-ln -s ../../c-list-%{c_list_commit} c-list
-ln -s ../../c-rbtree-%{c_rbtree_commit} c-rbtree
-ln -s ../../c-sundry-%{c_sundry_commit} c-sundry
-cd -
 
 %build
 %meson -Dselinux=true -Daudit=true
@@ -82,6 +62,11 @@ cd -
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Tue Oct 17 2017 Tom Gundersen <teg@jklm.no> - 8-1
+- Don't clean-up children of activated services by default
+- Don't use audit from the user instance
+- Support the ReloadConfig() API
+
 * Tue Oct 17 2017 Tom Gundersen <teg@jklm.no> - 7-1
 - Upstream bugfix release
 
