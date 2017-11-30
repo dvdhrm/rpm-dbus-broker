@@ -1,5 +1,5 @@
 Name:           dbus-broker
-Version:        8
+Version:        9
 Release:        1%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
@@ -62,6 +62,11 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Thu Nov 30 2017 Tom Gundersen <teg@jklm.no> - 9-1
+- Avoid nss deadlock at start-up
+- Support ExecReload
+- Respect User= in service files
+
 * Tue Oct 17 2017 Tom Gundersen <teg@jklm.no> - 8-1
 - Don't clean-up children of activated services by default
 - Don't use audit from the user instance
