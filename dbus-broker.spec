@@ -1,6 +1,6 @@
 Name:           dbus-broker
 Version:        9
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
 URL:            https://github.com/bus1/dbus-broker
@@ -62,6 +62,9 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 9-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Thu Nov 30 2017 Tom Gundersen <teg@jklm.no> - 9-1
 - Avoid nss deadlock at start-up
 - Support ExecReload
