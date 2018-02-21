@@ -1,5 +1,5 @@
 Name:           dbus-broker
-Version:        10
+Version:        11
 Release:        1%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
@@ -33,7 +33,7 @@ recent Linux kernel releases.
 %autosetup -p1
 
 %build
-%meson -Dselinux=true -Daudit=true
+%meson -Dselinux=true -Daudit=true -Dsystem-console-users=gdm
 %meson_build
 
 %install
@@ -52,7 +52,7 @@ recent Linux kernel releases.
 %systemd_postun dbus-broker.service
 
 %files
-%license COPYING
+%license AUTHORS
 %license LICENSE
 %{_bindir}/dbus-broker
 %{_bindir}/dbus-broker-launch
@@ -62,6 +62,10 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Feb 21 2018 Tom Gundersen <teg@jklm.no> - 11-1
+- The 'gdm' user is now considered at_console=true
+- Bugfixes and performance enhancements
+
 * Wed Feb 07 2018 Tom Gundersen <teg@jklm.no> - 10-1
 - Bugfixes and performance enhancements
 
