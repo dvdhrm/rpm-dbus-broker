@@ -1,5 +1,5 @@
 Name:           dbus-broker
-Version:        11
+Version:        13
 Release:        1%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
@@ -62,6 +62,11 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon Apr 23 2018 Tom Gundersen <teg@jklm.no> - 13-1
+- Namespace transient systemd units per launcher instance
+- Reduce reliance on NSS
+- Fix deadlock with nss-systemd
+
 * Wed Feb 21 2018 Tom Gundersen <teg@jklm.no> - 11-1
 - The 'gdm' user is now considered at_console=true
 - Bugfixes and performance enhancements
