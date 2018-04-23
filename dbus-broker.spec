@@ -33,7 +33,7 @@ recent Linux kernel releases.
 %autosetup -p1
 
 %build
-%meson -Dselinux=true -Daudit=true -Dsystem-console-users=gdm
+%meson -Dselinux=true -Daudit=true -Ddocs=true -Dsystem-console-users=gdm
 %meson_build
 
 %install
