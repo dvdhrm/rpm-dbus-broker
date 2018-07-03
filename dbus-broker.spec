@@ -1,5 +1,5 @@
 Name:           dbus-broker
-Version:        13
+Version:        14
 Release:        1%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
@@ -13,6 +13,7 @@ BuildRequires:  pkgconfig(audit)
 BuildRequires:  pkgconfig(expat)
 BuildRequires:  pkgconfig(dbus-1)
 BuildRequires:  pkgconfig(glib-2.0)
+BuildRequires:  pkgconfig(libcap-ng)
 BuildRequires:  pkgconfig(libselinux)
 BuildRequires:  pkgconfig(libsystemd)
 BuildRequires:  pkgconfig(systemd)
@@ -62,6 +63,11 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Tue Jul 03 2018 Tom Gundersen <teg@jklm.no> - 14-1
+- use inotify to reload config automatically
+- run as the right user
+- new compatibility features, bugfixes and performance enhancements
+
 * Mon Apr 23 2018 Tom Gundersen <teg@jklm.no> - 13-1
 - Namespace transient systemd units per launcher instance
 - Reduce reliance on NSS
