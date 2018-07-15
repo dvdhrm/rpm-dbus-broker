@@ -22,7 +22,7 @@ BuildRequires:  pkgconfig(systemd)
 BuildRequires:  gcc
 BuildRequires:  glibc-devel
 BuildRequires:  meson
-BuildRequires:  python2-docutils
+BuildRequires:  python3-docutils
 Requires:       dbus
 
 %description
