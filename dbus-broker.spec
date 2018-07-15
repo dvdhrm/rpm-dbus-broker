@@ -5,6 +5,8 @@ Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
 URL:            https://github.com/bus1/dbus-broker
 Source0:        https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
+Patch0:         1a4a1e90b747d65bdcf9e0de622776a15ed4cad4.patch
+Patch1:         79ae661cd21ab6d6194ce6f95f98e36c0b31be85.patch
 Provides:       bundled(c-dvar) = 1
 Provides:       bundled(c-list) = 3
 Provides:       bundled(c-rbtree) = 3

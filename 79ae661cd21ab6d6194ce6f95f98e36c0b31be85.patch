@@ -1,0 +1,54 @@
+From 79ae661cd21ab6d6194ce6f95f98e36c0b31be85 Mon Sep 17 00:00:00 2001
+From: Tom Gundersen <teg@jklm.no>
+Date: Thu, 12 Jul 2018 21:43:14 +0200
+Subject: [PATCH] audit: retain CAP_AUDIT_WRITE in the ambient capability set
+ when dropping caps
+
+Since we are not running at root, all caps will be dropped on execve(), unless
+they are also in the ambient capability set, being in the inheritable set is
+not sufficient.
+
+This ensures that dbus-broker retains CAP_AUDIT_WRITE (when enabled), and that
+dbus-broker-launch still does not.
+
+This fixes issue #159.
+
+Signed-off-by: Tom Gundersen <teg@jklm.no>
+---
+ src/util/audit.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/src/util/audit.c b/src/util/audit.c
+index ac9b3d7..5a837de 100644
+--- a/src/util/audit.c
++++ b/src/util/audit.c
+@@ -7,6 +7,7 @@
+ #include <grp.h>
+ #include <libaudit.h>
+ #include <stdlib.h>
++#include <sys/prctl.h>
+ #include <unistd.h>
+ #include "util/audit.h"
+ #include "util/error.h"
+@@ -69,7 +70,7 @@ int util_audit_drop_permissions(uint32_t uid, uint32_t gid) {
+ 
+                 if (have_audit_write) {
+                         r = capng_update(CAPNG_ADD,
+-                                         CAPNG_EFFECTIVE | CAPNG_PERMITTED,
++                                         CAPNG_EFFECTIVE | CAPNG_PERMITTED | CAPNG_INHERITABLE,
+                                          CAP_AUDIT_WRITE);
+                         if (r < 0)
+                                 return error_origin(-EINVAL);
+@@ -78,6 +79,12 @@ int util_audit_drop_permissions(uint32_t uid, uint32_t gid) {
+                 r = capng_change_id(uid, gid, CAPNG_DROP_SUPP_GRP);
+                 if (r)
+                         return error_origin(-EPERM);
++
++                if (have_audit_write) {
++                        r = prctl(PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, CAP_AUDIT_WRITE, 0, 0);
++                        if (r < 0)
++                                return error_origin(-errno);
++                }
+         }
+ 
+         return 0;
