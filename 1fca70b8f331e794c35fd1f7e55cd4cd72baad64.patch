@@ -1,0 +1,41 @@
+From 1fca70b8f331e794c35fd1f7e55cd4cd72baad64 Mon Sep 17 00:00:00 2001
+From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+Date: Mon, 27 Aug 2018 10:49:24 +0200
+Subject: [PATCH] launch: add back --verbose command line switch
+
+Signed-off-by: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
+
+diff --git a/src/launch/main.c b/src/launch/main.c
+index fc80bc3..60c0a2f 100644
+--- a/src/launch/main.c
++++ b/src/launch/main.c
+@@ -1634,6 +1634,7 @@ static void help(void) {
+ static int parse_argv(int argc, char *argv[]) {
+         enum {
+                 ARG_VERSION = 0x100,
++                ARG_VERBOSE,
+                 ARG_AUDIT,
+                 ARG_CONFIG,
+                 ARG_SCOPE,
+@@ -1641,6 +1642,7 @@ static int parse_argv(int argc, char *argv[]) {
+         static const struct option options[] = {
+                 { "help",               no_argument,            NULL,   'h'                     },
+                 { "version",            no_argument,            NULL,   ARG_VERSION             },
++                { "verbose",            no_argument,            NULL,   ARG_VERBOSE             },
+                 { "audit",              no_argument,            NULL,   ARG_AUDIT               },
+                 { "config-file",        required_argument,      NULL,   ARG_CONFIG,             },
+                 { "scope",              required_argument,      NULL,   ARG_SCOPE               },
+@@ -1658,6 +1660,10 @@ static int parse_argv(int argc, char *argv[]) {
+                         printf("dbus-broker-launch %d\n", PACKAGE_VERSION);
+                         return MAIN_EXIT;
+ 
++                /* noop for backward compatibility */
++                case ARG_VERBOSE:
++                        break;
++
+                 case ARG_AUDIT:
+                         main_arg_audit = true;
+                         break;
+-- 
+2.17.1
+

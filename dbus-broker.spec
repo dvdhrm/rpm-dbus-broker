@@ -1,10 +1,11 @@
 Name:           dbus-broker
 Version:        15
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
 URL:            https://github.com/bus1/dbus-broker
 Source0:        https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
+Patch0:         1fca70b8f331e794c35fd1f7e55cd4cd72baad64.patch
 Provides:       bundled(c-dvar) = 1
 Provides:       bundled(c-list) = 3
 Provides:       bundled(c-rbtree) = 3
@@ -63,6 +64,9 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon Aug 27 2018 Tom Gundersen <teg@jklm.no> - 15-2
+- add back --verbose switch for backwards compatibility
+
 * Wed Aug 08 2018 Tom Gundersen <teg@jklm.no> - 15-1
 - fix audit support
 - make logging about invalid config less verbose
