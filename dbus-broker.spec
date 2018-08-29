@@ -1,6 +1,6 @@
 Name:           dbus-broker
 Version:        15
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
 URL:            https://github.com/bus1/dbus-broker
@@ -46,12 +46,15 @@ recent Linux kernel releases.
 
 %post
 %systemd_post dbus-broker.service
+%systemd_user_post dbus-broker.service
 
 %preun
 %systemd_preun dbus-broker.service
+%systemd_user_preun dbus-broker.service
 
 %postun
 %systemd_postun dbus-broker.service
+%systemd_user_postun dbus-broker.service
 
 %files
 %license AUTHORS
@@ -64,6 +67,9 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Aug 29 2018 Tom Gundersen <teg@jklm.no> - 15-3
+- run %systemd_user rpm macros
+
 * Mon Aug 27 2018 Tom Gundersen <teg@jklm.no> - 15-2
 - add back --verbose switch for backwards compatibility
 
