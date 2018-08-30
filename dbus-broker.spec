@@ -1,6 +1,6 @@
 Name:           dbus-broker
 Version:        15
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
 URL:            https://github.com/bus1/dbus-broker
@@ -22,7 +22,7 @@ BuildRequires:  gcc
 BuildRequires:  glibc-devel
 BuildRequires:  meson
 BuildRequires:  python3-docutils
-Requires:       dbus
+Requires:       dbus-common
 
 %description
 dbus-broker is an implementation of a message bus as defined by the D-Bus
@@ -67,8 +67,11 @@ recent Linux kernel releases.
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Thu Aug 30 2018 Tom Gundersen <teg@jklm.no> - 15-4
+- depend on dbus-common rather than dbus
+
 * Wed Aug 29 2018 Tom Gundersen <teg@jklm.no> - 15-3
-- run %systemd_user rpm macros
+- run %%systemd_user rpm macros
 
 * Mon Aug 27 2018 Tom Gundersen <teg@jklm.no> - 15-2
 - add back --verbose switch for backwards compatibility
