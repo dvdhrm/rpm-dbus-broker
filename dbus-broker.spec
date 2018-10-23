@@ -2,7 +2,7 @@
 
 Name:           dbus-broker
 Version:        16
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Linux D-Bus Message Broker
 License:        ASL 2.0
 URL:            https://github.com/bus1/dbus-broker
@@ -62,6 +62,20 @@ getent passwd %{dbus_user_id} >/dev/null || \
                 -r dbus
 
 %post
+# Since F30 dbus-broker is the default bus implementation. However, changing
+# the systemd presets does not automatically switch over. Instead, we have to
+# explicitly disable dbus-daemon and enable dbus-broker. We only do this on
+# fresh installs, not on updates (updates retain the user's preferences).
+# Note that there is a virtual circular dependency between this package and the
+# fedora presets (in 'fedora-release'). To break this, we explicitly enable
+# dbus-broker here. Once the presets are in, we will be able to drop the
+# explicit 'enable' calls and rely on the presets below.
+if [ $1 -eq 1 ] ; then
+        systemctl --no-reload          disable dbus-daemon.service &>/dev/null || :
+        systemctl --no-reload --global disable dbus-daemon.service &>/dev/null || :
+        systemctl --no-reload          enable dbus-broker.service &>/dev/null || :
+        systemctl --no-reload --global enable dbus-broker.service &>/dev/null || :
+fi
 %systemd_post dbus-broker.service
 %systemd_user_post dbus-broker.service
 
@@ -90,6 +104,7 @@ systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
 %changelog
 * Tue Oct 23 2018 David Herrmann <dh.herrmann@gmail.com> - 16-2
 - create dbus user and group if non-existant
+- add explicit %post'lets to switch over to the broker as default
 
 * Fri Oct 12 2018 Tom Gundersen <teg@jklm.no> - 16-1
 - make resource limits configurable
