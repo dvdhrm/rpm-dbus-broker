@@ -1,3 +1,5 @@
+%global dbus_user_id 81
+
 Name:           dbus-broker
 Version:        16
 Release:        1%{?dist}
@@ -22,6 +24,7 @@ BuildRequires:  glibc-devel
 BuildRequires:  meson
 BuildRequires:  python3-docutils
 Requires:       dbus-common
+Requires(pre):  shadow-utils
 
 %description
 dbus-broker is an implementation of a message bus as defined by the D-Bus
@@ -42,6 +45,21 @@ recent Linux kernel releases.
 
 %check
 %meson_test
+
+%pre
+# create dbus user and group
+getent group %{dbus_user_id} >/dev/null || \
+        /usr/sbin/groupadd \
+                -g %{dbus_user_id} \
+                -r dbus
+getent passwd %{dbus_user_id} >/dev/null || \
+        /usr/sbin/useradd \
+                -c 'System message bus' \
+                -u %{dbus_user_id} \
+                -g %{dbus_user_id} \
+                -s /sbin/nologin \
+                -d '/' \
+                -r dbus
 
 %post
 %systemd_post dbus-broker.service
@@ -70,6 +88,9 @@ systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Tue Oct 23 2018 David Herrmann <dh.herrmann@gmail.com> - 16-2
+- create dbus user and group if non-existant
+
 * Fri Oct 12 2018 Tom Gundersen <teg@jklm.no> - 16-1
 - make resource limits configurable
 - rerun presets in case dbus-daemon is disabled
