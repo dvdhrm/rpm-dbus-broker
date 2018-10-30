@@ -1,30 +1,33 @@
 %global dbus_user_id 81
 
-Name:           dbus-broker
-Version:        16
-Release:        2%{?dist}
-Summary:        Linux D-Bus Message Broker
-License:        ASL 2.0
-URL:            https://github.com/bus1/dbus-broker
-Source0:        https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
-Provides:       bundled(c-dvar) = 1
-Provides:       bundled(c-list) = 3
-Provides:       bundled(c-rbtree) = 3
+Name:                 dbus-broker
+Version:              16
+Release:              3%{?dist}
+Summary:              Linux D-Bus Message Broker
+License:              ASL 2.0
+URL:                  https://github.com/bus1/dbus-broker
+Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
+Provides:             bundled(c-dvar) = 1
+Provides:             bundled(c-list) = 3
+Provides:             bundled(c-rbtree) = 3
 %{?systemd_requires}
-BuildRequires:  pkgconfig(audit)
-BuildRequires:  pkgconfig(expat)
-BuildRequires:  pkgconfig(dbus-1)
-BuildRequires:  pkgconfig(glib-2.0)
-BuildRequires:  pkgconfig(libcap-ng)
-BuildRequires:  pkgconfig(libselinux)
-BuildRequires:  pkgconfig(libsystemd)
-BuildRequires:  pkgconfig(systemd)
-BuildRequires:  gcc
-BuildRequires:  glibc-devel
-BuildRequires:  meson
-BuildRequires:  python3-docutils
-Requires:       dbus-common
-Requires(pre):  shadow-utils
+BuildRequires:        pkgconfig(audit)
+BuildRequires:        pkgconfig(expat)
+BuildRequires:        pkgconfig(dbus-1)
+BuildRequires:        pkgconfig(glib-2.0)
+BuildRequires:        pkgconfig(libcap-ng)
+BuildRequires:        pkgconfig(libselinux)
+BuildRequires:        pkgconfig(libsystemd)
+BuildRequires:        pkgconfig(systemd)
+BuildRequires:        gcc
+BuildRequires:        glibc-devel
+BuildRequires:        meson
+BuildRequires:        python3-docutils
+Requires:             dbus-common
+Requires(pre):        shadow-utils
+Requires(post):       /usr/bin/systemctl
+# for triggerpostun
+Requires:             /usr/bin/systemctl
 
 %description
 dbus-broker is an implementation of a message bus as defined by the D-Bus
@@ -102,6 +105,9 @@ systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Tue Oct 30 2018 Tom Gundersen <teg@jklm.no> - 16-3
+- add explicit systemctl dependency
+
 * Tue Oct 23 2018 David Herrmann <dh.herrmann@gmail.com> - 16-2
 - create dbus user and group if non-existant
 - add explicit %post'lets to switch over to the broker as default
