@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              16
-Release:              3%{?dist}
+Release:              4%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
