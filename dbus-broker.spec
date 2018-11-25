@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              16
-Release:              4%{?dist}
+Release:              5%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -108,6 +108,9 @@ systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Sun Nov 25 2018 Tom Gundersen <teg@jklm.no> - 16-4
+- fix SELinux bug
+
 * Tue Oct 30 2018 Tom Gundersen <teg@jklm.no> - 16-3
 - add explicit systemctl dependency
 
