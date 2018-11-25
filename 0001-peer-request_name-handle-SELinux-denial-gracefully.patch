@@ -1,0 +1,31 @@
+From a35b2c24e3e99c121132d0b201179618f9be3485 Mon Sep 17 00:00:00 2001
+From: Tom Gundersen <teg@jklm.no>
+Date: Sun, 25 Nov 2018 22:28:55 +0100
+Subject: [PATCH] peer/request_name: handle SELinux denial gracefully
+
+We were not handling policy failure due to SELinux properly, causing
+the bus to shut down due to an unexpected error.
+
+This bug was introduced in commit cb18435c5d42436dfedfcf9e389e023f2669c87b.
+
+Signed-off-by: Tom Gundersen <teg@jklm.no>
+---
+ src/bus/peer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/bus/peer.c b/src/bus/peer.c
+index bb85475..877da48 100644
+--- a/src/bus/peer.c
++++ b/src/bus/peer.c
+@@ -312,7 +312,7 @@ int peer_request_name(Peer *peer, const char *name, uint32_t flags, NameChange *
+ 
+         r = policy_snapshot_check_own(peer->policy, name);
+         if (r) {
+-                if (r == POLICY_E_ACCESS_DENIED)
++                if (r == POLICY_E_ACCESS_DENIED || r == POLICY_E_ACCESS_DENIED)
+                         return PEER_E_NAME_REFUSED;
+ 
+                 return error_fold(r);
+-- 
+2.19.1
+

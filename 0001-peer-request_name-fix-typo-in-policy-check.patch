@@ -1,0 +1,26 @@
+From 11957a930725d6e3af059bb5a0d98b540ce6fd20 Mon Sep 17 00:00:00 2001
+From: Tom Gundersen <teg@jklm.no>
+Date: Sun, 25 Nov 2018 22:55:15 +0100
+Subject: [PATCH] peer/request_name: fix typo in policy check
+
+Signed-off-by: Tom Gundersen <teg@jklm.no>
+---
+ src/bus/peer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/bus/peer.c b/src/bus/peer.c
+index 877da48..1a3ac66 100644
+--- a/src/bus/peer.c
++++ b/src/bus/peer.c
+@@ -312,7 +312,7 @@ int peer_request_name(Peer *peer, const char *name, uint32_t flags, NameChange *
+ 
+         r = policy_snapshot_check_own(peer->policy, name);
+         if (r) {
+-                if (r == POLICY_E_ACCESS_DENIED || r == POLICY_E_ACCESS_DENIED)
++                if (r == POLICY_E_ACCESS_DENIED || r == POLICY_E_SELINUX_ACCESS_DENIED)
+                         return PEER_E_NAME_REFUSED;
+ 
+                 return error_fold(r);
+-- 
+2.19.1
+
