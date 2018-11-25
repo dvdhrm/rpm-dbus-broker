@@ -77,10 +77,10 @@ getent passwd %{dbus_user_id} >/dev/null || \
 # dbus-broker here. Once the presets are in, we will be able to drop the
 # explicit 'enable' calls and rely on the presets below.
 if [ $1 -eq 1 ] ; then
-        systemctl --no-reload          disable dbus-daemon.service &>/dev/null || :
-        systemctl --no-reload --global disable dbus-daemon.service &>/dev/null || :
-        systemctl --no-reload          enable dbus-broker.service &>/dev/null || :
-        systemctl --no-reload --global enable dbus-broker.service &>/dev/null || :
+        /usr/bin/systemctl --no-reload          disable dbus-daemon.service &>/dev/null || :
+        /usr/bin/systemctl --no-reload --global disable dbus-daemon.service &>/dev/null || :
+        /usr/bin/systemctl --no-reload          enable dbus-broker.service &>/dev/null || :
+        /usr/bin/systemctl --no-reload --global enable dbus-broker.service &>/dev/null || :
 fi
 %systemd_post dbus-broker.service
 %systemd_user_post dbus-broker.service
@@ -94,8 +94,8 @@ fi
 %systemd_user_postun dbus-broker.service
 
 %triggerpostun -- dbus-daemon
-systemctl --no-reload preset dbus-broker.service &>/dev/null || :
-systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
+/usr/bin/systemctl --no-reload preset dbus-broker.service &>/dev/null || :
+/usr/bin/systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
 
 %files
 %license AUTHORS
