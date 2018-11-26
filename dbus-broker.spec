@@ -71,19 +71,19 @@ getent passwd %{dbus_user_id} >/dev/null || \
 # Since F30 dbus-broker is the default bus implementation. However, changing
 # the systemd presets does not automatically switch over. Instead, we have to
 # explicitly disable dbus-daemon and enable dbus-broker. We only do this on
-# fresh installs, not on updates (updates retain the user's preferences).
+# fresh installs, not on updates (updates retain the users preferences).
 # Note that there is a virtual circular dependency between this package and the
 # fedora presets (in 'fedora-release'). To break this, we explicitly enable
 # dbus-broker here. Once the presets are in, we will be able to drop the
 # explicit 'enable' calls and rely on the presets below.
+#%systemd_post dbus-broker.service
+#%systemd_user_post dbus-broker.service
 if [ $1 -eq 1 ] ; then
         /usr/bin/systemctl --no-reload          disable dbus-daemon.service &>/dev/null || :
         /usr/bin/systemctl --no-reload --global disable dbus-daemon.service &>/dev/null || :
         /usr/bin/systemctl --no-reload          enable dbus-broker.service &>/dev/null || :
         /usr/bin/systemctl --no-reload --global enable dbus-broker.service &>/dev/null || :
 fi
-%systemd_post dbus-broker.service
-%systemd_user_post dbus-broker.service
 
 %preun
 %systemd_preun dbus-broker.service
@@ -119,7 +119,7 @@ fi
 
 * Tue Oct 23 2018 David Herrmann <dh.herrmann@gmail.com> - 16-2
 - create dbus user and group if non-existant
-- add explicit %post'lets to switch over to the broker as default
+- add explicit %postlets to switch over to the broker as default
 
 * Fri Oct 12 2018 Tom Gundersen <teg@jklm.no> - 16-1
 - make resource limits configurable
@@ -167,8 +167,8 @@ fi
 - Respect User= in service files
 
 * Tue Oct 17 2017 Tom Gundersen <teg@jklm.no> - 8-1
-- Don't clean-up children of activated services by default
-- Don't use audit from the user instance
+- Dont clean-up children of activated services by default
+- Dont use audit from the user instance
 - Support the ReloadConfig() API
 
 * Tue Oct 17 2017 Tom Gundersen <teg@jklm.no> - 7-1
