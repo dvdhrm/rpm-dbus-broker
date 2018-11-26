@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              16
-Release:              6%{?dist}
+Release:              7%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -108,6 +108,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon Nov 26 2018 Tom Gundersen <teg@jklm.no> - 16-7
+- enable service file correctly at install
+
 * Mon Nov 26 2018 Tom Gundersen <teg@jklm.no> - 16-5
 - use full paths when calling binaries from rpm scripts
 
