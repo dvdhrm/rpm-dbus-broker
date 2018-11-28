@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              16
-Release:              7%{?dist}
+Release:              8%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -113,6 +113,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Nov 28 2018 Tom Gundersen <teg@jklm.no> - 16-8
+- don't apply presets on updates to dbus-daemon
+
 * Mon Nov 26 2018 Tom Gundersen <teg@jklm.no> - 16-7
 - enable service file correctly at install
 
