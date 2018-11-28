@@ -95,9 +95,9 @@ fi
 
 %triggerpostun -- dbus-daemon
 if [ $2 -eq 0 ] ; then
-	# See above comment about presets.
-	#/usr/bin/systemctl --no-reload preset dbus-broker.service &>/dev/null || :
-	#/usr/bin/systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
+        # See above comment about presets.
+        #/usr/bin/systemctl --no-reload preset dbus-broker.service &>/dev/null || :
+        #/usr/bin/systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
         /usr/bin/systemctl --no-reload          enable dbus-broker.service &>/dev/null || :
         /usr/bin/systemctl --no-reload --global enable dbus-broker.service &>/dev/null || :
 fi
