@@ -1,23 +1,22 @@
 %global dbus_user_id 81
 
 Name:                 dbus-broker
-Version:              16
-Release:              8%{?dist}
+Version:              17
+Release:              1%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
 Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Patch0:               0001-units-system-add-messagebus-alias.patch
-Patch1:               0001-peer-request_name-handle-SELinux-denial-gracefully.patch
-Patch2:               0001-peer-request_name-fix-typo-in-policy-check.patch
 Provides:             bundled(c-dvar) = 1
+Provides:             bundled(c-ini) = 1
 Provides:             bundled(c-list) = 3
 Provides:             bundled(c-rbtree) = 3
+Provides:             bundled(c-shquote) = 1
 %{?systemd_requires}
 BuildRequires:        pkgconfig(audit)
 BuildRequires:        pkgconfig(expat)
 BuildRequires:        pkgconfig(dbus-1)
-BuildRequires:        pkgconfig(glib-2.0)
 BuildRequires:        pkgconfig(libcap-ng)
 BuildRequires:        pkgconfig(libselinux)
 BuildRequires:        pkgconfig(libsystemd)
@@ -113,6 +112,11 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Jan 2 2019 Tom Gundersen <teg@jklm.no> - 17-1
+- apply more sandboxing through systemd
+- improve logging on disconnect
+- don't send FDs to clients who don't declare support
+
 * Wed Nov 28 2018 Tom Gundersen <teg@jklm.no> - 16-8
 - don't apply presets on updates to dbus-daemon
 
