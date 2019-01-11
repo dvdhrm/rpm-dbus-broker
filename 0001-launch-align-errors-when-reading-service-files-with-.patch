@@ -1,0 +1,53 @@
+From a0869bdb8bb6dde92374bc12f5428913d5357653 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Fri, 11 Jan 2019 17:53:39 +0100
+Subject: [PATCH] launch: align errors when reading service-files with
+ dbus-daemon(1)
+
+The reference implementation ignores all error-codes from
+bus1_desktop_file_load(), so we should do the same. However, none of
+these errors is expected, so lets make sure we print a warning.
+
+Reported-by: Yanko Kaneti <yaneti@declera.com>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+---
+ src/launch/main.c | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/src/launch/main.c b/src/launch/main.c
+index 2d3cce0..1a9e2eb 100644
+--- a/src/launch/main.c
++++ b/src/launch/main.c
+@@ -880,12 +880,24 @@ static int manager_ini_reader_parse_file(CIniGroup **groupp, const char *path) {
+ 
+         fd = open(path, O_RDONLY | O_CLOEXEC);
+         if (fd < 0) {
+-                if (errno == ENOENT) {
+-                        *groupp = NULL;
+-                        return 0;
+-                }
++                /*
++                 * For compatibility reasons we have to accept any failure
++                 * during open(2). dbus-daemon(1) simply ignores those errors
++                 * and skips the service file in question.
++                 *
++                 * We would very much prefer to whitelist specific error codes
++                 * here, but we would be playing whack-a-mole, so lets just
++                 * treat it as soft-error.
++                 */
++                if (errno == ENOENT)
++                        fprintf(stderr, "Original source was unlinked while parsing service file '%s'\n", path);
++                else if (errno == EACCES)
++                        fprintf(stderr, "Read access denied for service file '%s'\n", path);
++                else
++                        fprintf(stderr, "Unable to open service file '%s' (%d): %m\n", path, errno);
+ 
+-                return error_origin(-errno);
++                *groupp = NULL;
++                return 0;
+         }
+ 
+         r = c_ini_reader_new(&reader);
+-- 
+2.20.1
+

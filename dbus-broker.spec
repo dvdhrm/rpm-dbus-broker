@@ -2,12 +2,13 @@
 
 Name:                 dbus-broker
 Version:              17
-Release:              1%{?dist}
+Release:              2%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
 Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Patch0:               0001-units-system-add-messagebus-alias.patch
+Patch1:               0001-launch-align-errors-when-reading-service-files-with-.patch
 Provides:             bundled(c-dvar) = 1
 Provides:             bundled(c-ini) = 1
 Provides:             bundled(c-list) = 3
@@ -112,6 +113,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Sat Jan 12 2019 Tom Gundersen <teg@jklm.no> - 17-2
+- ignore config files that cannot be opened (fix rhbz #1665450)
+
 * Wed Jan 2 2019 Tom Gundersen <teg@jklm.no> - 17-1
 - apply more sandboxing through systemd
 - improve logging on disconnect
