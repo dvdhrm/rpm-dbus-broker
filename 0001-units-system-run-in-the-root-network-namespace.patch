@@ -1,0 +1,33 @@
+From a11182d2cd4bc1a89a9795c572add2d85ea92fa7 Mon Sep 17 00:00:00 2001
+From: Tom Gundersen <teg@jklm.no>
+Date: Mon, 14 Jan 2019 13:37:09 +0100
+Subject: [PATCH] units/system: run in the root network namespace
+
+The SELinux netlink socket can only be created in the root net
+namespace. libselinux does not support (as far as I can tell)
+providing the socket as a .socket unit, so we must run the broker
+in the root network namespace if we want to be notified about
+SELinux policy changes.
+
+This fixes issue #185.
+
+Signed-off-by: Tom Gundersen <teg@jklm.no>
+---
+ src/units/system/dbus-broker.service.in | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/units/system/dbus-broker.service.in b/src/units/system/dbus-broker.service.in
+index 97f1655..4155630 100644
+--- a/src/units/system/dbus-broker.service.in
++++ b/src/units/system/dbus-broker.service.in
+@@ -14,7 +14,6 @@ LimitNOFILE=16384
+ ProtectSystem=full
+ PrivateTmp=true
+ PrivateDevices=true
+-PrivateNetwork=true
+ ExecStart=@bindir@/dbus-broker-launch --scope system --audit
+ ExecReload=@bindir@/busctl call org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus ReloadConfig
+ 
+-- 
+2.20.1
+

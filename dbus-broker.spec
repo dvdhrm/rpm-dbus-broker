@@ -2,13 +2,14 @@
 
 Name:                 dbus-broker
 Version:              17
-Release:              2%{?dist}
+Release:              3%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
 Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Patch0:               0001-units-system-add-messagebus-alias.patch
 Patch1:               0001-launch-align-errors-when-reading-service-files-with-.patch
+Patch2:               0001-units-system-run-in-the-root-network-namespace.patch
 Provides:             bundled(c-dvar) = 1
 Provides:             bundled(c-ini) = 1
 Provides:             bundled(c-list) = 3
@@ -113,6 +114,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon Jan 14 2019 Tom Gundersen <teg@jklm.no> - 17-3
+- run in the root network namespace
+
 * Sat Jan 12 2019 Tom Gundersen <teg@jklm.no> - 17-2
 - ignore config files that cannot be opened (fix rhbz #1665450)
 
