@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              17
-Release:              3%{?dist}
+Release:              4%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -114,6 +114,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 17-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Mon Jan 14 2019 Tom Gundersen <teg@jklm.no> - 17-3
 - run in the root network namespace
 
