@@ -1,7 +1,7 @@
 %global dbus_user_id 81
 
 Name:                 dbus-broker
-Version:              18
+Version:              19
 Release:              1%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
@@ -112,6 +112,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Thu Mar 28 2019 Tom Gundersen <teg@jklm.no> - 19-1
+- Minor bug fixes
+
 * Thu Feb 21 2019 Tom Gundersen <teg@jklm.no> - 18-1
 - Minor bug fixes
 
