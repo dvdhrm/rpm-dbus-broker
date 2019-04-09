@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              19
-Release:              1%{?dist}
+Release:              2%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -69,20 +69,48 @@ getent passwd %{dbus_user_id} >/dev/null || \
 %post
 # Since F30 dbus-broker is the default bus implementation. However, changing
 # the systemd presets does not automatically switch over. Instead, we have to
-# explicitly disable dbus-daemon and enable dbus-broker. We only do this on
-# fresh installs, not on updates (updates retain the users preferences).
+# explicitly disable dbus-daemon and enable dbus-broker. We do this on the first
+# install of this package.
+#
 # Note that there is a virtual circular dependency between this package and the
 # fedora presets (in 'fedora-release'). To break this, we explicitly enable
 # dbus-broker here. Once the presets are in, we will be able to drop the
 # explicit 'enable' calls and rely on the presets below.
 #systemd_post dbus-broker.service
 #systemd_user_post dbus-broker.service
+#
+# systemd has special checks if dbus.socket and dbus.service are active and
+# will close the dbus connection if they are not. When the symlinks are changed
+# from dbus-daemon to dbus-broker, systemd would think that dbus is gone,
+# because dbus.service (which now is an alias for dbus-broker.service) is not
+# active. Let's add a temporary override that will keep pid1 happy.
 
 if [ $1 -eq 1 ] ; then
-        /usr/bin/systemctl --no-reload          disable dbus-daemon.service &>/dev/null || :
-        /usr/bin/systemctl --no-reload --global disable dbus-daemon.service &>/dev/null || :
-        /usr/bin/systemctl --no-reload          enable dbus-broker.service &>/dev/null || :
-        /usr/bin/systemctl --no-reload --global enable dbus-broker.service &>/dev/null || :
+        if systemctl is-enabled -q dbus-daemon.service; then
+                # Install a temporary generator that'll keep providing the
+                # alias as it was.
+                mkdir -p /run/systemd/system-generators/
+                cat >>/run/systemd/system-generators/dbus-symlink-generator <<EOF
+#!/bin/sh
+ln -s /usr/lib/systemd/system/dbus-daemon.service \$2/dbus.service
+EOF
+                chmod +x /run/systemd/system-generators/dbus-symlink-generator
+                chcon system_u:object_r:init_exec_t:s0 /run/systemd/system-generators/dbus-symlink-generator || :
+        fi
+
+        if systemctl is-enabled -q --global dbus-daemon.service; then
+                mkdir -p /run/systemd/user-generators/
+                cat >>/run/systemd/user-generators/dbus-symlink-generator <<EOF
+#!/bin/sh
+ln -s /usr/lib/systemd/user/dbus-daemon.service \$2/dbus.service
+EOF
+                chmod +x /run/systemd/user-generators/dbus-symlink-generator
+        fi
+
+        systemctl --no-reload -q          disable dbus-daemon.service || :
+        systemctl --no-reload -q --global disable dbus-daemon.service || :
+        systemctl --no-reload -q          enable dbus-broker.service || :
+        systemctl --no-reload -q --global enable dbus-broker.service || :
 fi
 
 %preun
@@ -96,10 +124,10 @@ fi
 %triggerpostun -- dbus-daemon
 if [ $2 -eq 0 ] ; then
         # See above comment about presets.
-        #/usr/bin/systemctl --no-reload preset dbus-broker.service &>/dev/null || :
-        #/usr/bin/systemctl --no-reload --global preset dbus-broker.service &>/dev/null || :
-        /usr/bin/systemctl --no-reload          enable dbus-broker.service &>/dev/null || :
-        /usr/bin/systemctl --no-reload --global enable dbus-broker.service &>/dev/null || :
+        #systemctl --no-reload preset dbus-broker.service || :
+        #systemctl --no-reload --global preset dbus-broker.service || :
+        systemctl --no-reload          enable dbus-broker.service || :
+        systemctl --no-reload --global enable dbus-broker.service || :
 fi
 
 %files
@@ -113,6 +141,10 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Tue Apr  9 2019 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 19-2
+- Add a temporary generator to fix switching from dbus-daemon to
+  dbus-broker (#1674045)
+
 * Thu Mar 28 2019 Tom Gundersen <teg@jklm.no> - 19-1
 - Minor bug fixes
 
