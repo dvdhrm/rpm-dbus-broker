@@ -75,8 +75,9 @@ getent passwd %{dbus_user_id} >/dev/null || \
 # fedora presets (in 'fedora-release'). To break this, we explicitly enable
 # dbus-broker here. Once the presets are in, we will be able to drop the
 # explicit 'enable' calls and rely on the presets below.
-#%systemd_post dbus-broker.service
-#%systemd_user_post dbus-broker.service
+#systemd_post dbus-broker.service
+#systemd_user_post dbus-broker.service
+
 if [ $1 -eq 1 ] ; then
         /usr/bin/systemctl --no-reload          disable dbus-daemon.service &>/dev/null || :
         /usr/bin/systemctl --no-reload --global disable dbus-daemon.service &>/dev/null || :
