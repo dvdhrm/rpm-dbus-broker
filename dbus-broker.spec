@@ -113,6 +113,8 @@ EOF
         systemctl --no-reload -q --global enable dbus-broker.service || :
 fi
 
+%journal_catalog_update
+
 %preun
 %systemd_preun dbus-broker.service
 %systemd_user_preun dbus-broker.service
@@ -135,6 +137,8 @@ fi
 %license LICENSE
 %{_bindir}/dbus-broker
 %{_bindir}/dbus-broker-launch
+${_journalcatalogdir}/dbus-broker.catalog
+${_journalcatalogdir}/dbus-broker-launch.catalog
 %{_mandir}/man1/dbus-broker.1*
 %{_mandir}/man1/dbus-broker-launch.1*
 %{_unitdir}/dbus-broker.service
