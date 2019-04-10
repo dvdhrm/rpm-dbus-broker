@@ -1,8 +1,8 @@
 %global dbus_user_id 81
 
 Name:                 dbus-broker
-Version:              19
-Release:              2%{?dist}
+Version:              20
+Release:              1%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -141,6 +141,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Apr 10 2019 Tom Gundersen <teg@jklm.no> - 20-1
+- Improve handling of broken or deprecated configuration
+
 * Tue Apr  9 2019 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 19-2
 - Add a temporary generator to fix switching from dbus-daemon to
   dbus-broker (#1674045)
