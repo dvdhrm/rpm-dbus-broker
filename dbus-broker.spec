@@ -8,7 +8,9 @@ License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
 Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Patch0:               0001-units-system-add-messagebus-alias.patch
-Patch1:               assert.patch
+Patch1:               0001-Revert-bus-policy-define-the-type-of-the-policy-seri.patch
+Patch2:               assert.patch
+Patch3:               disable-c-dvar-type-test.patch
 Provides:             bundled(c-dvar) = 1
 Provides:             bundled(c-ini) = 1
 Provides:             bundled(c-list) = 3
