@@ -2,12 +2,13 @@
 
 Name:                 dbus-broker
 Version:              20
-Release:              1%{?dist}
+Release:              2%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
 Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Patch0:               0001-units-system-add-messagebus-alias.patch
+Patch1:               assert.patch
 Provides:             bundled(c-dvar) = 1
 Provides:             bundled(c-ini) = 1
 Provides:             bundled(c-list) = 3
@@ -137,16 +138,20 @@ fi
 %license LICENSE
 %{_bindir}/dbus-broker
 %{_bindir}/dbus-broker-launch
-${_journalcatalogdir}/dbus-broker.catalog
-${_journalcatalogdir}/dbus-broker-launch.catalog
+%{_journalcatalogdir}/dbus-broker.catalog
+%{_journalcatalogdir}/dbus-broker-launch.catalog
 %{_mandir}/man1/dbus-broker.1*
 %{_mandir}/man1/dbus-broker-launch.1*
 %{_unitdir}/dbus-broker.service
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Thu Apr 11 2019 Tom Gundersen <teg@jklm.no> - 20-2
+- Fix the c_assert macro
+
 * Wed Apr 10 2019 Tom Gundersen <teg@jklm.no> - 20-1
 - Improve handling of broken or deprecated configuration
+- Avoid at_console workaround if possible
 
 * Tue Apr  9 2019 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 19-2
 - Add a temporary generator to fix switching from dbus-daemon to
@@ -189,7 +194,7 @@ ${_journalcatalogdir}/dbus-broker-launch.catalog
 
 * Tue Oct 23 2018 David Herrmann <dh.herrmann@gmail.com> - 16-2
 - create dbus user and group if non-existant
-- add explicit %postlets to switch over to the broker as default
+- add explicit %%postlets to switch over to the broker as default
 
 * Fri Oct 12 2018 Tom Gundersen <teg@jklm.no> - 16-1
 - make resource limits configurable
