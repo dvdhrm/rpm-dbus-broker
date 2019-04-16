@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              20
-Release:              2%{?dist}
+Release:              3%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -148,6 +148,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Tue Apr 16 2019 Adam Williamson <awilliam@redhat.com> - 20-3
+- Rebuild with Meson fix for #1699099
+
 * Thu Apr 11 2019 Tom Gundersen <teg@jklm.no> - 20-2
 - Fix the c_assert macro
 
