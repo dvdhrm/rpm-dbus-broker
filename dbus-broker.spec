@@ -2,15 +2,16 @@
 
 Name:                 dbus-broker
 Version:              20
-Release:              3%{?dist}
+Release:              4%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
 Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Patch0:               0001-units-system-add-messagebus-alias.patch
 Patch1:               0001-Revert-bus-policy-define-the-type-of-the-policy-seri.patch
-Patch2:               assert.patch
-Patch3:               disable-c-dvar-type-test.patch
+Patch2:               0001-launch-service-fix-state-tracking.patch
+Patch3:               assert.patch
+Patch4:               disable-c-dvar-type-test.patch
 Provides:             bundled(c-dvar) = 1
 Provides:             bundled(c-ini) = 1
 Provides:             bundled(c-list) = 3
@@ -148,6 +149,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Apr 17 2019 Tom Gundersen <teg@jklm.no> - 20-4
+- Fix assert due to failing reload #1700514
+
 * Tue Apr 16 2019 Adam Williamson <awilliam@redhat.com> - 20-3
 - Rebuild with Meson fix for #1699099
 

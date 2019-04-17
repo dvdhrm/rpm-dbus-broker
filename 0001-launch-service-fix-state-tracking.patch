@@ -1,0 +1,136 @@
+From b32683eff39160232879ba899947cd456b19be9e Mon Sep 17 00:00:00 2001
+From: David Rheinsberg <david.rheinsberg@gmail.com>
+Date: Wed, 17 Apr 2019 09:13:07 +0200
+Subject: [PATCH] launch/service: fix state tracking
+
+The 'state' field is currently used for 2 purposes: To track whether a
+service was pushed into the broker, and to track whether a service was
+found during reload. While both can be tracked in the same state, it
+makes things overly complex and the current solution is definitely
+wrong. We do not consider failing configuration-reloads, which happen
+to leave the reload-tag untouched. In those cases, we trigger the wrong
+assertion in the activation path.
+
+This patch splits the state into separate booleans. One to track
+whether or not a services was pushed into the broker ('running'),
+and one as throw-away tag for reload tracking ('reload_tag'). Note that
+the value of the reload-tag is only correct *DURING RELOADS*. It is
+garbage at all other times. Do not verify it. It is solely meant to be
+used by the launcher to track services across reloads!
+
+Signed-off-by: David Rheinsberg <david.rheinsberg@gmail.com>
+---
+ src/launch/launcher.c |  8 ++++----
+ src/launch/service.c  | 12 +++++-------
+ src/launch/service.h  |  9 ++-------
+ 3 files changed, 11 insertions(+), 18 deletions(-)
+
+diff --git a/src/launch/launcher.c b/src/launch/launcher.c
+index f6ac140..83c4495 100644
+--- a/src/launch/launcher.c
++++ b/src/launch/launcher.c
+@@ -715,8 +715,8 @@ static int launcher_load_service_file(Launcher *launcher, const char *path, cons
+         } else {
+                 Service *old_service = c_container_of(parent, Service, rb_by_name);
+ 
+-                if (old_service->state == SERVICE_STATE_DEFUNCT) {
+-                        old_service->state = SERVICE_STATE_CURRENT;
++                if (!old_service->reload_tag) {
++                        old_service->reload_tag = true;
+                         r = service_update(old_service, path, unit, argc, argv, user, uid);
+                         if (r)
+                                 return error_trace(r);
+@@ -802,7 +802,7 @@ static int launcher_remove_services(Launcher *launcher) {
+         int r;
+ 
+         c_rbtree_for_each_entry_safe(service, service_safe, &launcher->services, rb) {
+-                if (service->state != SERVICE_STATE_DEFUNCT)
++                if (service->reload_tag)
+                         continue;
+ 
+                 r = service_remove(service);
+@@ -1159,7 +1159,7 @@ static int launcher_reload_config(Launcher *launcher) {
+                 return error_origin(r);
+ 
+         c_rbtree_for_each_entry(service, &launcher->services, rb)
+-                service->state = SERVICE_STATE_DEFUNCT;
++                service->reload_tag = false;
+ 
+         r = nss_cache_populate(&nss_cache);
+         if (r)
+diff --git a/src/launch/service.c b/src/launch/service.c
+index 91d9200..726dcce 100644
+--- a/src/launch/service.c
++++ b/src/launch/service.c
+@@ -503,7 +503,7 @@ int service_activate(Service *service) {
+                 return 0;
+         }
+ 
+-        c_assert(service->state == SERVICE_STATE_CURRENT);
++        c_assert(service->running);
+ 
+         if (service->unit) {
+                 r = service_start_unit(service);
+@@ -523,7 +523,7 @@ int service_add(Service *service) {
+         _c_cleanup_(c_freep) char *object_path = NULL;
+         int r;
+ 
+-        if (service->state != SERVICE_STATE_PENDING)
++        if (service->running)
+                 return 0;
+ 
+         r = asprintf(&object_path, "/org/bus1/DBus/Name/%s", service->id);
+@@ -544,8 +544,7 @@ int service_add(Service *service) {
+         if (r < 0)
+                 return error_origin(r);
+ 
+-        service->state = SERVICE_STATE_CURRENT;
+-
++        service->running = true;
+         return 0;
+ }
+ 
+@@ -554,7 +553,7 @@ int service_remove(Service *service) {
+         _c_cleanup_(c_freep) char *object_path = NULL;
+         int r;
+ 
+-        if (service->state == SERVICE_STATE_PENDING)
++        if (!service->running)
+                 return 0;
+ 
+         r = asprintf(&object_path, "/org/bus1/DBus/Name/%s", service->id);
+@@ -572,7 +571,6 @@ int service_remove(Service *service) {
+         if (r < 0)
+                 return error_origin(r);
+ 
+-        service->state = SERVICE_STATE_PENDING;
+-
++        service->running = false;
+         return 0;
+ }
+diff --git a/src/launch/service.h b/src/launch/service.h
+index 09f32ec..14bf928 100644
+--- a/src/launch/service.h
++++ b/src/launch/service.h
+@@ -12,16 +12,11 @@
+ 
+ typedef struct Service Service;
+ 
+-typedef enum {
+-        SERVICE_STATE_PENDING,
+-        SERVICE_STATE_CURRENT,
+-        SERVICE_STATE_DEFUNCT,
+-} ServiceState;
+-
+ struct Service {
+         Launcher *launcher;
+-        ServiceState state;
+         bool not_found;
++        bool running;
++        bool reload_tag;
+         sd_bus_slot *slot;
+         CRBNode rb;
+         CRBNode rb_by_name;
+-- 
+2.20.1
+
