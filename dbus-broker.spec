@@ -2,12 +2,13 @@
 
 Name:                 dbus-broker
 Version:              21
-Release:              1%{?dist}
+Release:              2%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
 Source0:              https://github.com/bus1/dbus-broker/releases/download/v%{version}/dbus-broker-%{version}.tar.xz
 Patch0:               0001-units-system-add-messagebus-alias.patch
+Patch1:               0001-launch-improve-error-handling-for-opendir.patch
 Provides:             bundled(c-dvar) = 1
 Provides:             bundled(c-ini) = 1
 Provides:             bundled(c-list) = 3
@@ -145,6 +146,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Fri May  3 2019 Tom Gundersen <teg@jklm.no> - 21-1
+- Don't fail on EACCESS when reading config, fixes #1704920
+
 * Thu May  2 2019 Tom Gundersen <teg@jklm.no> - 21-1
 - Minor bugfixes related to config reload for #1704488
 
