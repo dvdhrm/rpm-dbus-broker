@@ -145,7 +145,7 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
-* Wed Jul 10 2019 Jonathan Brielmaier <jbrielmaier@suse.de> - 21-3
+* Wed Jul 10 2019 Jonathan Brielmaier <jbrielmaier@suse.de> - 21-4
 - Make creation of dbus user/group more robust, fixes #1717925
 
 * Thu May  9 2019 Tom Gundersen <teg@jklm.no> - 21-2
