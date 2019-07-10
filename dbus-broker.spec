@@ -145,10 +145,10 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
-* Wed July 10 2019 Jonathan Brielmaier <jbrielmaier@suse.de> - 21-4
+* Wed Jul 10 2019 Jonathan Brielmaier <jbrielmaier@suse.de> - 21-3
 - Make creation of dbus user/group more robust, fixes #1717925
 
-*Thu May  9 2019 Tom Gundersen <teg@jklm.no> - 21-2
+* Thu May  9 2019 Tom Gundersen <teg@jklm.no> - 21-2
 - Gracefully handle missing FDs in received messages, #1706883
 - Minor bugfixes
 
