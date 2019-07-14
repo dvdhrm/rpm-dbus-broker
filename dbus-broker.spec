@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              21
-Release:              4%{?dist}
+Release:              5%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -56,12 +56,12 @@ recent Linux kernel releases.
 
 %pre
 # create dbus user and group
-getent group dbus >/dev/null || groupadd -f -g %{dbus_user_uid} -r dbus
+getent group dbus >/dev/null || groupadd -f -g %{dbus_user_id} -r dbus
 if ! getent passwd dbus >/dev/null ; then
-    if ! getent passwd %{dbus_user_uid} >/dev/null ; then
-      useradd -r -u %{dbus_user_uid} -g %{dbus_user_uid} -d '/' -s /sbin/nologin -c "System message bus" dbus
+    if ! getent passwd %{dbus_user_id} >/dev/null ; then
+      useradd -r -u %{dbus_user_id} -g %{dbus_user_id} -d '/' -s /sbin/nologin -c "System message bus" dbus
     else
-      useradd -r -g %{dbus_user_uid} -d '/' -s /sbin/nologin -c "System message bus" dbus
+      useradd -r -g %{dbus_user_id} -d '/' -s /sbin/nologin -c "System message bus" dbus
     fi
 fi
 exit 0
@@ -145,6 +145,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Sun Jul 14 2019 Neal Gompa <ngompa13@gmail.com> - 21-5
+- Fix reference to dbus_user_id macro in scriptlet
+
 * Wed Jul 10 2019 Jonathan Brielmaier <jbrielmaier@suse.de> - 21-4
 - Make creation of dbus user/group more robust, fixes #1717925
 
