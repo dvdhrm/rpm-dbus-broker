@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              21
-Release:              5%{?dist}
+Release:              6%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -145,6 +145,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 21-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
 * Sun Jul 14 2019 Neal Gompa <ngompa13@gmail.com> - 21-5
 - Fix reference to dbus_user_id macro in scriptlet
 
