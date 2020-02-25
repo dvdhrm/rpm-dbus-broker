@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              22
-Release:              1%{?dist}
+Release:              2%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -41,7 +41,7 @@ recent Linux kernel releases.
 %autosetup -p1
 
 %build
-%meson -Dselinux=true -Daudit=true -Ddocs=true -Dsystem-console-users=gdm
+%meson -Dselinux=true -Daudit=true -Ddocs=true -Dsystem-console-users=gdm -Dlinux-4-17=true
 %meson_build
 
 %install
