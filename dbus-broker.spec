@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              22
-Release:              2%{?dist}
+Release:              3%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -63,52 +63,8 @@ fi
 exit 0
 
 %post
-# Since F30 dbus-broker is the default bus implementation. However, changing
-# the systemd presets does not automatically switch over. Instead, we have to
-# explicitly disable dbus-daemon and enable dbus-broker. We do this on the first
-# install of this package.
-#
-# Note that there is a virtual circular dependency between this package and the
-# fedora presets (in 'fedora-release'). To break this, we explicitly enable
-# dbus-broker here. Once the presets are in, we will be able to drop the
-# explicit 'enable' calls and rely on the presets below.
-#systemd_post dbus-broker.service
-#systemd_user_post dbus-broker.service
-#
-# systemd has special checks if dbus.socket and dbus.service are active and
-# will close the dbus connection if they are not. When the symlinks are changed
-# from dbus-daemon to dbus-broker, systemd would think that dbus is gone,
-# because dbus.service (which now is an alias for dbus-broker.service) is not
-# active. Let's add a temporary override that will keep pid1 happy.
-
-if [ $1 -eq 1 ] ; then
-        if systemctl is-enabled -q dbus-daemon.service; then
-                # Install a temporary generator that'll keep providing the
-                # alias as it was.
-                mkdir -p /run/systemd/system-generators/
-                cat >>/run/systemd/system-generators/dbus-symlink-generator <<EOF
-#!/bin/sh
-ln -s /usr/lib/systemd/system/dbus-daemon.service \$2/dbus.service
-EOF
-                chmod +x /run/systemd/system-generators/dbus-symlink-generator
-                chcon system_u:object_r:init_exec_t:s0 /run/systemd/system-generators/dbus-symlink-generator || :
-        fi
-
-        if systemctl is-enabled -q --global dbus-daemon.service; then
-                mkdir -p /run/systemd/user-generators/
-                cat >>/run/systemd/user-generators/dbus-symlink-generator <<EOF
-#!/bin/sh
-ln -s /usr/lib/systemd/user/dbus-daemon.service \$2/dbus.service
-EOF
-                chmod +x /run/systemd/user-generators/dbus-symlink-generator
-        fi
-
-        systemctl --no-reload -q          disable dbus-daemon.service || :
-        systemctl --no-reload -q --global disable dbus-daemon.service || :
-        systemctl --no-reload -q          enable dbus-broker.service || :
-        systemctl --no-reload -q --global enable dbus-broker.service || :
-fi
-
+systemd_post dbus-broker.service
+systemd_user_post dbus-broker.service
 %journal_catalog_update
 
 %preun
@@ -121,11 +77,12 @@ fi
 
 %triggerpostun -- dbus-daemon
 if [ $2 -eq 0 ] ; then
-        # See above comment about presets.
-        #systemctl --no-reload preset dbus-broker.service || :
-        #systemctl --no-reload --global preset dbus-broker.service || :
-        systemctl --no-reload          enable dbus-broker.service || :
-        systemctl --no-reload --global enable dbus-broker.service || :
+        # The `dbus-daemon` package used to provide the default D-Bus
+        # implementation. We continue to make sure that if you uninstall it, we
+        # re-evaluate whether to enable dbus-broker to replace it. If we didnt,
+        # you might end up without any bus implementation active.
+        systemctl --no-reload          preset dbus-broker.service || :
+        systemctl --no-reload --global preset dbus-broker.service || :
 fi
 
 %files
@@ -141,6 +98,12 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon May  4 2020 David Rheinsberg <david.rheinsberg@gmail.com> - 22-3
+- Drop dbus-daemon -> dbus-broker live system conversion. New setups will
+  automatically pick up dbus-broker as default implementation. If you upgrade
+  from pre-F30, you will not get any auto upgrade anymore. Deinstalling the
+  dbus-daemon package will, however, automatically pick up dbus-broker.
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 21-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
