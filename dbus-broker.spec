@@ -1,8 +1,8 @@
 %global dbus_user_id 81
 
 Name:                 dbus-broker
-Version:              22
-Release:              3%{?dist}
+Version:              23
+Release:              1%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -98,6 +98,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon May 11 2020 David Rheinsberg <david.rheinsberg@gmail.com> - 23-1
+- Update to upstream v23.
+
 * Mon May  4 2020 David Rheinsberg <david.rheinsberg@gmail.com> - 22-3
 - Drop dbus-daemon -> dbus-broker live system conversion. New setups will
   automatically pick up dbus-broker as default implementation. If you upgrade
