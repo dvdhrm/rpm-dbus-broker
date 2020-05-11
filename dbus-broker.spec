@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              23
-Release:              1%{?dist}
+Release:              2%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -63,8 +63,8 @@ fi
 exit 0
 
 %post
-systemd_post dbus-broker.service
-systemd_user_post dbus-broker.service
+%systemd_post dbus-broker.service
+%systemd_user_post dbus-broker.service
 %journal_catalog_update
 
 %preun
@@ -98,6 +98,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon May 11 2020 Adam Williamson <awilliam@redhat.com> - 23-2
+- Fix missing % in macro invocations in %post
+
 * Mon May 11 2020 David Rheinsberg <david.rheinsberg@gmail.com> - 23-1
 - Update to upstream v23.
 
