@@ -2,7 +2,7 @@
 
 Name:                 dbus-broker
 Version:              23
-Release:              2%{?dist}
+Release:              3%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -98,6 +98,9 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 23-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Mon May 11 2020 Adam Williamson <awilliam@redhat.com> - 23-2
 - Fix missing % in macro invocations in %post
 
