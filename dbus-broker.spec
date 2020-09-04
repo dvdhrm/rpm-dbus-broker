@@ -1,8 +1,8 @@
 %global dbus_user_id 81
 
 Name:                 dbus-broker
-Version:              23
-Release:              3%{?dist}
+Version:              24
+Release:              1%{?dist}
 Summary:              Linux D-Bus Message Broker
 License:              ASL 2.0
 URL:                  https://github.com/bus1/dbus-broker
@@ -98,6 +98,10 @@ fi
 %{_userunitdir}/dbus-broker.service
 
 %changelog
+* Fri Sep  4 2020 David Rheinsberg <david.rheinsberg@gmail.com> - 24-1
+- Update to upstream v24. Only minor changes to the diagnostic messages as
+  well as audit-events.
+
 * Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 23-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
